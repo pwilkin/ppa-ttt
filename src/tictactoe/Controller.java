@@ -34,14 +34,25 @@ public class Controller {
         if (!gameEnded) {
             if (board.getPlayerForField(row, column) == null) {
                 board.makeMove(row, column);
+                if (!checkVictoryAndShow()) {
+                    board.makeComputerMove();
+                }
             }
             drawBoard();
-            Player wins = board.checkVictory();
-            if (wins != null) {
-                gameEnded = true;
-                showVictoryMessage(wins);
+            if (!gameEnded) {
+                checkVictoryAndShow();
             }
         }
+    }
+
+    private boolean checkVictoryAndShow() {
+        Player wins = board.checkVictory();
+        if (wins != null) {
+            gameEnded = true;
+            showVictoryMessage(wins);
+            return true;
+        }
+        return false;
     }
 
     private void drawBoard() {
