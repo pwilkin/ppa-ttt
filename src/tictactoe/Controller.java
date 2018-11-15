@@ -14,6 +14,12 @@ import javafx.scene.layout.Pane;
 
 public class Controller {
 
+    protected Calosc mainController;
+
+    public void setMainController(Calosc mainController) {
+        this.mainController = mainController;
+    }
+
     @FXML
     protected GridPane grid;
 
@@ -26,30 +32,30 @@ public class Controller {
             Integer column = Optional.ofNullable(GridPane.getColumnIndex(child)).orElse(0);
             child.setOnMouseClicked(event -> handleMove(row, column));
         }
-        gameEnded = false;
-        board = new Board();
+        startNewGame();
     }
 
     private void handleMove(Integer row, Integer column) {
         if (!gameEnded) {
-            if (board.getPlayerForField(row, column) == null) {
+            if (board.canYouMakeAMove(row, column)) {
                 board.makeMove(row, column);
-                if (!checkVictoryAndShow()) {
+                if (!checkVictoryShowAndRegister()) {
                     board.makeComputerMove();
                 }
             }
             drawBoard();
             if (!gameEnded) {
-                checkVictoryAndShow();
+                checkVictoryShowAndRegister();
             }
         }
     }
 
-    private boolean checkVictoryAndShow() {
+    private boolean checkVictoryShowAndRegister() {
         Player wins = board.checkVictory();
         if (wins != null) {
             gameEnded = true;
             showVictoryMessage(wins);
+            mainController.informAboutWin(wins);
             return true;
         }
         return false;
@@ -77,4 +83,9 @@ public class Controller {
         alert.showAndWait();
     }
 
+    public void startNewGame() {
+        gameEnded = false;
+        board = new Board();
+        drawBoard();
+    }
 }

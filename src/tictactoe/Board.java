@@ -143,4 +143,8 @@ public class Board {
         }
         return false;
     }
+
+    public boolean canYouMakeAMove(Integer row, Integer column) {
+        return getPlayerForField(row, column) == null;
+    }
 }
