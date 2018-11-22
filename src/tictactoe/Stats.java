@@ -3,6 +3,8 @@ package tictactoe;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import tictactoe.event.GameWonEvent;
+import tictactoe.event.RequestNewGameEvent;
 
 /**
  * Created by pwilkin on 15-Nov-18.
@@ -12,10 +14,11 @@ public class Stats {
     int krzyzykWins = 0;
     int kolkoWins = 0;
 
-    protected Calosc mainController;
+    protected ApplicationController mainController;
 
-    public void setMainController(Calosc mainController) {
+    public void setMainController(ApplicationController mainController) {
         this.mainController = mainController;
+        mainController.registerHandler(GameWonEvent.class, event -> updateWins(event.getWhoWon()));
     }
 
     @FXML
@@ -25,10 +28,10 @@ public class Stats {
     protected Label kolko;
 
     public void newGame(ActionEvent actionEvent) {
-        mainController.restartGame();
+        mainController.handleEvent(new RequestNewGameEvent());
     }
 
-    public void updateWins(Player wins) {
+    private void updateWins(Player wins) {
         if (wins == Player.CROSS) {
             krzyzykWins++;
         } else {

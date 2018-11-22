@@ -11,13 +11,16 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import tictactoe.event.GameWonEvent;
+import tictactoe.event.RequestNewGameEvent;
 
 public class Controller {
 
-    protected Calosc mainController;
+    protected ApplicationController mainController;
 
-    public void setMainController(Calosc mainController) {
+    public void setMainController(ApplicationController mainController) {
         this.mainController = mainController;
+        mainController.registerHandler(RequestNewGameEvent.class, event -> startNewGame());
     }
 
     @FXML
@@ -55,7 +58,7 @@ public class Controller {
         if (wins != null) {
             gameEnded = true;
             showVictoryMessage(wins);
-            mainController.informAboutWin(wins);
+            mainController.handleEvent(new GameWonEvent(wins));
             return true;
         }
         return false;
@@ -83,7 +86,7 @@ public class Controller {
         alert.showAndWait();
     }
 
-    public void startNewGame() {
+    private void startNewGame() {
         gameEnded = false;
         board = new Board();
         drawBoard();
